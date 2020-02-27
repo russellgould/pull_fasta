@@ -1,0 +1,3 @@
+Chromosome,Strand,Start,End,ReadCount,ModeLocation,ModeReadCount,Shape,TranscriptLocation,TranscriptID,GeneName,GeneType,%-Capped
+Chr1,+,0,0,0,7,0,.,.,AT3G09260.1,AT3G09260,gene,0
+Chr1,-,0,0,0,7,0,.,.,AT3G09260.1,AT3G09260,gene,0
