@@ -44,7 +44,7 @@ if __name__ == "__main__":
     else:
         if args.gff:
             regions = read_gff(args.input)
-        elif args.bed:
+        else:
             regions = read_bed(args.input)
 
     regions = regions[bedtools_cols]
