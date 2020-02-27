@@ -32,19 +32,16 @@ if __name__ == "__main__":
         regions = read_peak(args.input)
         regions["start"] = where(
             regions["strand"] == "-",
-            regions["loc"] - args.nucs_down,
-            regions["loc"] - args.nucs_up,
+            regions["loc"] - args.nucs_down - 1,
+            regions["loc"] - args.nucs_up - 1,
         )
-
         regions["end"] = where(
             regions["strand"] == "-",
             regions["loc"] + args.nucs_up,
             regions["loc"] + args.nucs_down,
         )
-        regions["start"] = where(regions["start"] < 0, 0, regions["start"])
-        regions["end"] = regions["end"] + 1
         regions["score"] = 0
-
+        regions = regions[bedtools_cols]
     else:
         if args.gff:
             regions = read_gff(args.input)
