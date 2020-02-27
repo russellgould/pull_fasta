@@ -1,7 +1,7 @@
 from argparse import ArgumentParser, FileType
 from numpy import where
-from os import system
 from .utils import *
+import subprocess
 
 parser = ArgumentParser()
 group = parser.add_mutually_exclusive_group(required=True)
@@ -41,7 +41,6 @@ if __name__ == "__main__":
             regions["loc"] + args.nucs_down,
         )
         regions["score"] = 0
-        regions = regions[bedtools_cols]
     else:
         if args.gff:
             regions = read_gff(args.input)
