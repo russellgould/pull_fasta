@@ -26,6 +26,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 if __name__ == "__main__":
+    bedtools_cols = ["chrom", "start", "end", "id", "score", "strand"]
+
     if args.peak:
         regions = read_peak(args.input)
         regions["start"] = where(
@@ -39,9 +41,14 @@ if __name__ == "__main__":
             regions["loc"] + args.nucs_up,
             regions["loc"] + args.nucs_down,
         )
+        regions["start"] = where(regions["start"] < 0, 0, regions["start"])
+        regions["end"] = regions["end"] + 1
+        regions["score"] = 0
+
     else:
         if args.gff:
             regions = read_gff(args.input)
         elif args.bed:
             regions = read_bed(args.input)
 
+    regions = regions[bedtools_cols]
