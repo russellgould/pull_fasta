@@ -105,3 +105,6 @@ Thumbs.db
 # pytest generated files #
 ##########################
 /.pytest_cache
+
+# project specific files
+notebooks
