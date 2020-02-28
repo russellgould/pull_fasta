@@ -44,7 +44,13 @@ if __name__ == "__main__":
     else:
         if args.gff:
             regions = read_gff(args.input)
+            regions["start"] -= 1
+            if "name" not in regions.columns:
+                regions["name"] = "."
+            regions = regions[bedtools_cols]
         else:
             regions = read_bed(args.input)
 
     regions = regions[bedtools_cols]
+
+    print(regions)
