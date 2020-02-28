@@ -12,6 +12,7 @@ parser.add_argument("input", type=FileType("r"), help="file containing regions")
 parser.add_argument(
     "-nu",
     "--nucs_up",
+    type=int,
     required=True,
     dest="nucs_up",
     help="number of nucleotides upstream",
@@ -19,6 +20,7 @@ parser.add_argument(
 parser.add_argument(
     "-nd",
     "--nucs_down",
+    type=int,
     required=True,
     dest="nucs_down",
     help="number of nucleotides downstream",
@@ -26,7 +28,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 if __name__ == "__main__":
-    bedtools_cols = ["chrom", "start", "end", "id", "score", "strand"]
+    bedtools_cols = ["chrom", "start", "end", "name", "score", "strand"]
 
     if args.peak:
         regions = read_peak(args.input)

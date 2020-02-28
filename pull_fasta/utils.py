@@ -17,7 +17,7 @@ def read_peak(file_path: str):
                 "Shape": "shape",
                 "TranscriptLocation": "script_loc",
                 "TranscriptID": "id",
-                "GeneName": "gene_name",
+                "GeneName": "name",
                 "GeneType": "type",
                 "%-Capped": "capped",
             }
