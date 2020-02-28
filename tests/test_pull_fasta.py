@@ -3,6 +3,9 @@ import pull_fasta as app
 import subprocess
 from pathlib import Path
 
+nu = "2"
+nd = "4"
+
 
 def test_version():
     assert app.__version__ == "0.1.0"
@@ -14,10 +17,20 @@ def test_exit_status():
 
 
 def test_peak():
-    infile = "/Users/user/Documents/Lab/pull_fasta/tests/data/regions.peaks"
+    infile = Path("tests/data/regions.peaks").resolve()
     cmd = subprocess.run(
-        ["python", "-m", "pull_fasta.main", "-peak", infile, "-nu", "2", "-nd", "4"],
+        ["python", "-m", "pull_fasta.main", "-peak", infile, "-nu", nu, "-nd", nd],
         capture_output=True,
     )
     test_str = "chromstartendnamescorestrand0Chr1411AT3G092600+1Chr129AT3G092600-"
+    assert "".join(cmd.stdout.decode().split()) == test_str
+
+
+def test_gff():
+    infile = Path("tests/data/regions.gff").resolve()
+    cmd = subprocess.run(
+        ["python", "-m", "pull_fasta.main", "-gff", infile, "-nu", nu, "-nd", nd],
+        capture_output=True,
+    )
+    test_str = "chromstartendnamescorestrand0Chr167..+1Chr167..-"
     assert "".join(cmd.stdout.decode().split()) == test_str
