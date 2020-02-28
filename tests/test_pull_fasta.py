@@ -34,3 +34,13 @@ def test_gff():
     )
     test_str = "chromstartendnamescorestrand0Chr167..+1Chr167..-"
     assert "".join(cmd.stdout.decode().split()) == test_str
+
+
+def test_bed():
+    infile = Path("tests/data/regions.bed").resolve()
+    cmd = subprocess.run(
+        ["python", "-m", "pull_fasta.main", "-bed", infile, "-nu", nu, "-nd", nd],
+        capture_output=True,
+    )
+    test_str = "chromstartendnamescorestrand0Chr167.0+1Chr167.0-"
+    assert "".join(cmd.stdout.decode().split()) == test_str
