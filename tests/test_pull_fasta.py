@@ -14,6 +14,10 @@ def test_exit_status():
 
 
 def test_peak():
-    infile = Path("/Users/user/Documents/Lab/pull_fasta/tests/data/regions.peaks")
-    cmd = subprocess.run(["python", "-m", "pull_fasta.main", "-peak", infile])
-
+    infile = "/Users/user/Documents/Lab/pull_fasta/tests/data/regions.peaks"
+    cmd = subprocess.run(
+        ["python", "-m", "pull_fasta.main", "-peak", infile, "-nu", "2", "-nd", "4"],
+        capture_output=True,
+    )
+    test_str = "chromstartendnamescorestrand0Chr1411AT3G092600+1Chr129AT3G092600-"
+    assert "".join(cmd.stdout.decode().split()) == test_str
