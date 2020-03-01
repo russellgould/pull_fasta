@@ -127,38 +127,37 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-if __name__ == "__main__":
-    if args.peak:
-        regions = read_peak(args.regions)
-        regions["start"] = where(
-            regions["strand"] == "-",
-            regions["loc"] - args.nucs_down - 1,
-            regions["loc"] - args.nucs_up - 1,
-        )
-        regions["end"] = where(
-            regions["strand"] == "-",
-            regions["loc"] + args.nucs_up,
-            regions["loc"] + args.nucs_down,
-        )
-        regions["score"] = 0
-    else:
-        if args.gff:
-            regions = read_gff(args.regions)
-            regions["start"] -= 1
-            if "name" not in regions.columns:
-                regions["name"] = "."
-        else:
-            regions = read_bed(args.regions)
-
-    bedtools_cols = ["chrom", "start", "end", "name", "score", "strand"]
-    regions = regions[bedtools_cols]
-
-    tmp_path = Path("/tmp/tmp.bed").resolve()
-    regions.to_csv(tmp_path, sep="\t", index=False, header=False)
-
-    cmd = run(
-        ["bedtools", "getfasta", "-fi", args.ref, "-bed", tmp_path, "-s"],
-        capture_output=True,
+if args.peak:
+    regions = read_peak(args.regions)
+    regions["start"] = where(
+        regions["strand"] == "-",
+        regions["loc"] - args.nucs_down - 1,
+        regions["loc"] - args.nucs_up - 1,
     )
+    regions["end"] = where(
+        regions["strand"] == "-",
+        regions["loc"] + args.nucs_up,
+        regions["loc"] + args.nucs_down,
+    )
+    regions["score"] = 0
+else:
+    if args.gff:
+        regions = read_gff(args.regions)
+        regions["start"] -= 1
+        if "name" not in regions.columns:
+            regions["name"] = "."
+    else:
+        regions = read_bed(args.regions)
 
-    print("".join(cmd.stdout.decode().split()))
+bedtools_cols = ["chrom", "start", "end", "name", "score", "strand"]
+regions = regions[bedtools_cols]
+
+tmp_path = Path("/tmp/tmp.bed").resolve()
+regions.to_csv(tmp_path, sep="\t", index=False, header=False)
+
+cmd = run(
+    ["bedtools", "getfasta", "-fi", args.ref, "-bed", tmp_path, "-s"],
+    capture_output=True,
+)
+
+print("".join(cmd.stdout.decode().split()))
