@@ -5,6 +5,7 @@ from pathlib import Path
 
 nu = "2"
 nd = "4"
+ref_path = Path("tests/data/reference.fa").resolve()
 
 
 def test_version():
@@ -17,30 +18,42 @@ def test_exit_status():
 
 
 def test_peak():
-    infile = Path("tests/data/regions.peaks").resolve()
+    infile = Path("tests/data/example.peaks").resolve()
     cmd = subprocess.run(
-        ["python", "-m", "pull_fasta.main", "-peak", infile, "-nu", nu, "-nd", nd],
+        [
+            "python",
+            "-m",
+            "pull_fasta.main",
+            "-ref",
+            ref_path,
+            "-peak",
+            infile,
+            "-nu",
+            nu,
+            "-nd",
+            nd,
+        ],
         capture_output=True,
     )
-    test_str = "chromstartendnamescorestrand0Chr1411AT3G092600+1Chr129AT3G092600-"
-    assert "".join(cmd.stdout.decode().split()) == test_str
+    test = ">Chr1:4-11(+)AAACCCT>Chr1:2-9(-)GGTTTAG"
+    assert "".join(cmd.stdout.decode().split()) == test
 
 
-def test_gff():
-    infile = Path("tests/data/regions.gff").resolve()
+def test_gff_regions():
+    infile = Path("tests/data/example_regions.gff").resolve()
     cmd = subprocess.run(
         ["python", "-m", "pull_fasta.main", "-gff", infile, "-nu", nu, "-nd", nd],
         capture_output=True,
     )
-    test_str = "chromstartendnamescorestrand0Chr167..+1Chr167..-"
-    assert "".join(cmd.stdout.decode().split()) == test_str
+    test = ">Chr1:4-11(+)AAACCCT>Chr1:2-9(-)GGTTTAG"
+    assert "".join(cmd.stdout.decode().split()) == test
 
 
-def test_bed():
-    infile = Path("tests/data/regions.bed").resolve()
+def test_bed_regions():
+    infile = Path("tests/data/example_regions.bed").resolve()
     cmd = subprocess.run(
         ["python", "-m", "pull_fasta.main", "-bed", infile, "-nu", nu, "-nd", nd],
         capture_output=True,
     )
-    test_str = "chromstartendnamescorestrand0Chr167.0+1Chr167.0-"
-    assert "".join(cmd.stdout.decode().split()) == test_str
+    test = ">Chr1:4-11(+)AAACCCT>Chr1:2-9(-)GGTTTAG"
+    assert "".join(cmd.stdout.decode().split()) == test
