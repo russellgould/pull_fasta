@@ -1,8 +1,99 @@
+#!/usr/bin/env python
+
 from argparse import ArgumentParser, FileType
 from pathlib import Path
 from numpy import where
-from .utils import *
+from pandas import read_csv, Series
 import subprocess
+
+
+def read_peak(file_path: str):
+    """Load TSSseq data file and return a pandas DataFrame."""
+    return (
+        read_csv(file_path)
+        .rename(
+            columns={
+                "Chromosome": "chrom",
+                "Strand": "strand",
+                "Start": "start",
+                "End": "end",
+                "ReadCount": "total_count",
+                "ModeLocation": "loc",
+                "ModeReadCount": "mode_count",
+                "Shape": "shape",
+                "TranscriptLocation": "script_loc",
+                "TranscriptID": "id",
+                "GeneName": "name",
+                "GeneType": "type",
+                "%-Capped": "capped",
+            }
+        )
+        .drop(
+            columns=[
+                "start",
+                "end",
+                "total_count",
+                "mode_count",
+                "capped",
+                "shape",
+                "script_loc",
+            ]
+        )
+    )
+
+
+def read_gff(file_path: str):
+    """Load a GFF file and return a pandas DataFrame."""
+
+    def format_attributes(df):
+        for item in df["attributes"]:
+            yield {
+                x.split("=")[0]: x.split("=")[1]
+                for x in [sub_item for sub_item in item.split(";")]
+            }
+
+    cols = [
+        "chrom",
+        "source",
+        "type",
+        "start",
+        "end",
+        "score",
+        "strand",
+        "phase",
+        "attributes",
+    ]
+    df = read_csv(file_path, sep="\t", header=None)
+    if df.shape[1] > 9:
+        df = df.drop(df.columns[[i for i in range(9, df.shape[1])]], axis=1)
+
+    df = df.rename(columns={i: cols[i] for i in range(df.shape[1])})
+
+    if df["attributes"].all() != ".":
+        df["attributes"] = Series(format_attributes(df))
+        df["name"] = Series(x["ID"] for x in df["attributes"])
+    return df
+
+
+def read_bed(file_path: str):
+    """Load a BED file and return a pandas DataFrame."""
+    cols = [
+        "chrom",
+        "start",
+        "end",
+        "name",
+        "score",
+        "strand",
+        "thick_start",
+        "thick_end",
+        "item_rgb",
+        "block_count",
+        "block_sizes",
+        "block_starts",
+    ]
+    df = read_csv(file_path, sep="\t", header=None)
+    return df.rename(columns={i: cols[i] for i in range(df.shape[1])})
+
 
 parser = ArgumentParser()
 group = parser.add_mutually_exclusive_group(required=True)
@@ -10,7 +101,14 @@ group.add_argument("-gff", action="store_true", help="indicate the input file is
 group.add_argument("-bed", action="store_true", help="indicate the input file is BED")
 group.add_argument("-peak", action="store_true", help="indicate the input file is PEAK")
 parser.add_argument("regions", type=FileType("r"), help="file containing regions")
-parser.add_argument("reference", type=Path, help="reference fasta file", dest="ref")
+parser.add_argument(
+    "-ref",
+    "--reference",
+    required=True,
+    type=Path,
+    help="reference fasta file",
+    dest="ref",
+)
 parser.add_argument(
     "-nu",
     "--nucs_up",
@@ -51,17 +149,17 @@ if __name__ == "__main__":
             regions["start"] -= 1
             if "name" not in regions.columns:
                 regions["name"] = "."
-            regions = regions[bedtools_cols]
         else:
             regions = read_bed(args.regions)
 
     regions = regions[bedtools_cols]
 
-    tmp_path = Path("tmp.bed").resolve()
+    tmp_path = Path("/tmp/tmp.bed").resolve()
     regions.to_csv(tmp_path, sep="\t", index=False, header=False)
 
     cmd = subprocess.run(
-        ["bedtools", "getfasta", "-fi", args.ref, "-bed", tmp_path, "-s"]
+        ["bedtools", "getfasta", "-fi", args.ref, "-bed", tmp_path, "-s"],
+        capture_output=True,
     )
 
-    print(cmd.stdout)
+    print("".join(cmd.stdout.decode().split()))
