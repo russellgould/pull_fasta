@@ -42,18 +42,87 @@ def test_peak():
 def test_gff_regions():
     infile = Path("tests/data/example_regions.gff").resolve()
     cmd = subprocess.run(
-        ["python", "-m", "pull_fasta.main", "-gff", infile, "-nu", nu, "-nd", nd],
+        [
+            "python",
+            "-m",
+            "pull_fasta.main",
+            "-ref",
+            ref_path,
+            "-gff",
+            infile,
+            "-nu",
+            nu,
+            "-nd",
+            nd,
+        ],
         capture_output=True,
     )
     test = ">Chr1:4-11(+)AAACCCT>Chr1:2-9(-)GGTTTAG"
+    assert "".join(cmd.stdout.decode().split()) == test
+
+
+def test_gff_points():
+    infile = Path("tests/data/example_points.gff").resolve()
+    cmd = subprocess.run(
+        [
+            "python",
+            "-m",
+            "pull_fasta.main",
+            "-ref",
+            ref_path,
+            "-gff",
+            infile,
+            "-nu",
+            nu,
+            "-nd",
+            nd,
+        ],
+        capture_output=True,
+    )
+    test = ">Chr1:3-4(+)T>Chr1:8-9(-)G"
     assert "".join(cmd.stdout.decode().split()) == test
 
 
 def test_bed_regions():
     infile = Path("tests/data/example_regions.bed").resolve()
     cmd = subprocess.run(
-        ["python", "-m", "pull_fasta.main", "-bed", infile, "-nu", nu, "-nd", nd],
+        [
+            "python",
+            "-m",
+            "pull_fasta.main",
+            "-ref",
+            ref_path,
+            "-bed",
+            infile,
+            "-nu",
+            nu,
+            "-nd",
+            nd,
+        ],
         capture_output=True,
     )
     test = ">Chr1:4-11(+)AAACCCT>Chr1:2-9(-)GGTTTAG"
     assert "".join(cmd.stdout.decode().split()) == test
+
+
+def test_bed_points():
+    infile = Path("tests/data/example_points.bed").resolve()
+    cmd = subprocess.run(
+        [
+            "python",
+            "-m",
+            "pull_fasta.main",
+            "-ref",
+            ref_path,
+            "-bed",
+            infile,
+            "-nu",
+            nu,
+            "-nd",
+            nd,
+        ],
+        capture_output=True,
+    )
+    test = ">Chr1:3-4(+)T>Chr1:8-9(-)G"
+    assert "".join(cmd.stdout.decode().split()) == test
+
