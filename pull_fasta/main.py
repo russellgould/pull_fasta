@@ -128,8 +128,6 @@ parser.add_argument(
 args = parser.parse_args()
 
 if __name__ == "__main__":
-    bedtools_cols = ["chrom", "start", "end", "name", "score", "strand"]
-
     if args.peak:
         regions = read_peak(args.regions)
         regions["start"] = where(
@@ -152,6 +150,7 @@ if __name__ == "__main__":
         else:
             regions = read_bed(args.regions)
 
+    bedtools_cols = ["chrom", "start", "end", "name", "score", "strand"]
     regions = regions[bedtools_cols]
 
     tmp_path = Path("/tmp/tmp.bed").resolve()
