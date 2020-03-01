@@ -4,7 +4,7 @@ from argparse import ArgumentParser, FileType
 from pathlib import Path
 from numpy import where
 from pandas import read_csv, Series
-import subprocess
+from subprocess import run
 
 
 def read_peak(file_path: str):
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     tmp_path = Path("/tmp/tmp.bed").resolve()
     regions.to_csv(tmp_path, sep="\t", index=False, header=False)
 
-    cmd = subprocess.run(
+    cmd = run(
         ["bedtools", "getfasta", "-fi", args.ref, "-bed", tmp_path, "-s"],
         capture_output=True,
     )
