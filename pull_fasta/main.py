@@ -4,12 +4,17 @@ from sys import version_info
 
 assert version_info >= (3, 7), "Wrong Python version! Requires at least 3.7.0"
 
-from argparse import ArgumentParser, FileType
-from pathlib import Path
-from subprocess import run
-from itertools import zip_longest
-from numpy import where
-from pandas import read_csv, Series
+try:
+    from argparse import ArgumentParser, FileType
+    from pathlib import Path
+    from subprocess import run
+    from itertools import zip_longest
+    from numpy import where
+    from pandas import read_csv, Series
+except:
+    print(
+        "Problem with imports! Ensure you are running this from the correct environment."
+    )
 
 
 def grouper(iterable, n, fillvalue=None):
