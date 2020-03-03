@@ -109,6 +109,7 @@ group.add_argument("-gff", action="store_true", help="indicate the input file is
 group.add_argument("-bed", action="store_true", help="indicate the input file is BED")
 group.add_argument("-peak", action="store_true", help="indicate the input file is PEAK")
 parser.add_argument("regions", type=FileType("r"), help="file containing regions")
+parser.add_argument("output", type=FileType("w"), help="FASTA file to store output")
 parser.add_argument(
     "-ref",
     "--reference",
@@ -168,5 +169,15 @@ cmd = run(
     capture_output=True,
 )
 
-print("".join(cmd.stdout.decode().split()))
+output = cmd.stdout.decode().split()
 
+with open(args.output) as f:
+    for idx, group in enumerate(grouper(output, 2)):
+        chrom = regions.iloc[idx, 0]
+        start = regions.iloc[idx, 1] + 1
+        end = regions.iloc[idx, 2]
+        name = regions.iloc[idx, 3]
+        strand = regions.iloc[idx, 5]
+        seq = group[1]
+        f.write(f">{name} {chrom}:{start}-{end}({strand})\n")
+        f.write(f"{seq}\n")
