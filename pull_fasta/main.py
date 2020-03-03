@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from sys import version_info
+import sys
 
-assert version_info >= (3, 7), "Wrong Python version! Requires at least 3.7.0"
+assert sys.version_info >= (3, 7), "Wrong Python version! Requires at least 3.7.0"
 
 try:
     from argparse import ArgumentParser, FileType
@@ -15,7 +15,7 @@ except:
     print(
         "Problem with imports! Ensure you are running this from the correct environment."
     )
-    exit
+    sys.exit(1)
 
 
 def grouper(iterable, n, fillvalue=None):
