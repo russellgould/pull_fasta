@@ -2,10 +2,10 @@
 
 from argparse import ArgumentParser, FileType
 from pathlib import Path
-from numpy import where
-from pandas import read_csv, Series
 from subprocess import run
 from itertools import zip_longest
+from numpy import where
+from pandas import read_csv, Series
 
 
 def grouper(iterable, n, fillvalue=None):
