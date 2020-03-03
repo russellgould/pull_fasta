@@ -5,6 +5,14 @@ from pathlib import Path
 from numpy import where
 from pandas import read_csv, Series
 from subprocess import run
+from itertools import zip_longest
+
+
+def grouper(iterable, n, fillvalue=None):
+    "Collect data into fixed-length chunks or blocks"
+    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return zip_longest(*args, fillvalue=fillvalue)
 
 
 def read_peak(file_path: str):
@@ -161,3 +169,4 @@ cmd = run(
 )
 
 print("".join(cmd.stdout.decode().split()))
+
