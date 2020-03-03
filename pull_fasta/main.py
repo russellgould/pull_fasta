@@ -171,7 +171,7 @@ cmd = run(
 
 output = cmd.stdout.decode().split()
 
-with open(args.output) as f:
+with args.output as f:
     for idx, group in enumerate(grouper(output, 2)):
         chrom = regions.iloc[idx, 0]
         start = regions.iloc[idx, 1] + 1
