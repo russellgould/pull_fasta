@@ -15,6 +15,7 @@ except:
     print(
         "Problem with imports! Ensure you are running this from the correct environment."
     )
+    exit
 
 
 def grouper(iterable, n, fillvalue=None):
