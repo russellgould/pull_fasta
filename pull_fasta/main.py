@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
+from sys import version_info
+
+assert version_info >= (3, 7), "Wrong Python version! Requires at least 3.7.0"
+
 from argparse import ArgumentParser, FileType
 from pathlib import Path
 from subprocess import run
 from itertools import zip_longest
 from numpy import where
 from pandas import read_csv, Series
-from sys import version_info
-
-assert version_info >= (3, 7), "Wrong Python version! Requires at least 3.7.0"
 
 
 def grouper(iterable, n, fillvalue=None):
