@@ -114,7 +114,10 @@ def read_bed(file_path: str):
     return df.rename(columns={i: cols[i] for i in range(df.shape[1])})
 
 
-parser = ArgumentParser()
+parser = ArgumentParser(
+    usage="Pull FASTA sequences",
+    description="This tool pulls FASTA sequences from an input file containing regions in a number of file formats.",
+)
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument("-gff", action="store_true", help="indicate the input file is GFF")
 group.add_argument("-bed", action="store_true", help="indicate the input file is BED")
@@ -130,18 +133,12 @@ parser.add_argument(
     dest="ref",
 )
 parser.add_argument(
-    "-nu",
-    "--nucs_up",
-    type=int,
-    required=True,
-    dest="nucs_up",
-    help="number of nucleotides upstream",
+    "-nu", type=int, default=0, dest="nucs_up", help="number of nucleotides upstream",
 )
 parser.add_argument(
     "-nd",
-    "--nucs_down",
     type=int,
-    required=True,
+    default=0,
     dest="nucs_down",
     help="number of nucleotides downstream",
 )
