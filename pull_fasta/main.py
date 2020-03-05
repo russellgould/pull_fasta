@@ -13,7 +13,7 @@ try:
     from pandas import read_csv, Series, DataFrame
 except:
     print(
-        "Problem with imports! Ensure you are running this from the correct environment."
+        "Problem with imports! Ensure you are not running this from the base Conda environment."
     )
     sys.exit(1)
 
