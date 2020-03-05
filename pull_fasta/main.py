@@ -10,7 +10,7 @@ try:
     from subprocess import run
     from itertools import zip_longest
     from numpy import where
-    from pandas import read_csv, Series
+    from pandas import read_csv, Series, DataFrame
 except:
     print(
         "Problem with imports! Ensure you are running this from the correct environment."
@@ -61,15 +61,29 @@ def read_peak(file_path: str):
     )
 
 
-def read_gff(file_path: str):
+def read_gff(file_path: str) -> DataFrame:
     """Load a GFF file and return a pandas DataFrame."""
 
     def format_attributes(df):
         for item in df["attributes"]:
-            yield {
-                x.split("=")[0]: x.split("=")[1]
-                for x in [sub_item for sub_item in item.split(";")]
-            }
+            split_on_semi = item.split(";")
+            if "=" in split_on_semi[0]:
+                yield {
+                    x.split("=")[0]: x.split("=")[1] for x in split_on_semi if "=" in x
+                }
+            else:
+                yield "."
+
+    def get_name(row):
+        if type(row["attributes"]) == dict:
+            if "ID" in row["attributes"].keys():
+                return row["attributes"]["ID"]
+            elif "Name" in row["attributes"].keys():
+                return row["attributes"]["Name"]
+            else:
+                return "."
+        else:
+            return "."
 
     cols = [
         "chrom",
@@ -90,7 +104,7 @@ def read_gff(file_path: str):
 
     if df["attributes"].all() != ".":
         df["attributes"] = Series(format_attributes(df))
-        df["name"] = Series(x["ID"] for x in df["attributes"])
+        df["name"] = df.apply(get_name, axis=1)
     return df
 
 
